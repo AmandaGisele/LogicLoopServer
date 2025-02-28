@@ -54,6 +54,9 @@ COPY cert.pem /etc/ssl/cert.pem
 COPY fullchain.pem /etc/ssl/fullchain.pem
 COPY privkey.pem /etc/ssl/privkey.pem
 
+# Verify the SSL certificates are copied correctly
+RUN ls -l /etc/ssl/fullchain.pem && ls -l /etc/ssl/privkey.pem
+
 # Set the working directory
 WORKDIR /app
 
