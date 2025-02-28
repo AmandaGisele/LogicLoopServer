@@ -31,10 +31,13 @@ RUN mkdir -p /app && \
 # Copy the source code into the container
 COPY . /build
 
+# List the contents of the /build directory for debugging
+RUN ls -R /build
+
 # Build the Go application
-RUN cd /build/LogicLoopServer/server/main && go build -v -o /app/main && \
-    cd /build/LogicLoopServer/server/ai && python3 -m pip install -r requirements.txt && \
-    mv /build/LogicLoopServer/server/ai /app/ai && \
+RUN cd /build/server/main && go build -v -o /app/main && \
+    cd /build/server/ai && python3 -m pip install -r requirements.txt && \
+    mv /build/server/ai /app/ai && \
     rm -rf /usr/local/work/src && \
     apt-get remove -y --auto-remove git libc6-dev pkg-config g++ gcc && \
     apt-get autoclean && apt-get clean && apt-get autoremove && \
