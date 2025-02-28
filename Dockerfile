@@ -40,14 +40,19 @@ COPY . /build
 RUN ls -R /build
 
 # Build the Go application
-RUN cd /build/server/main && go build -v -o /app/main && \
-    cd /build/server/ai && python3 -m pip install -r requirements.txt && \
-    mv /build/server/ai /app/ai && \
-    rm -rf /usr/local/work/src && \
+RUN cd /build/server/main && go build -v -o /app/main
+
+# Install Python dependencies
+RUN cd /build/server/ai && python3 -m pip install -r requirements.txt
+
+# Move the AI server to the app directory
+RUN mv /build/server/ai /app/ai
+
+# Clean up unnecessary files
+RUN rm -rf /usr/local/work/src /build /usr/share/doc && \
     apt-get remove -y --auto-remove git libc6-dev pkg-config g++ gcc && \
     apt-get autoclean && apt-get clean && apt-get autoremove && \
-    rm -rf ~/.local/share/Trash/* && rm -rf /usr/local/go* && rm -rf /usr/share/perl* && \
-    rm -rf /build* && rm -rf /usr/share/doc*
+    rm -rf ~/.local/share/Trash/* /usr/local/go* /usr/share/perl*
 
 # Copy the SSL certificates into the container
 COPY cert.pem /etc/ssl/cert.pem
