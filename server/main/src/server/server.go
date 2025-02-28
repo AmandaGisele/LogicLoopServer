@@ -1,12 +1,9 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
 	"html/template"
 	"net/http"
-	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -26,6 +23,13 @@ var Port = "8003"
 var UseSSL = false
 var UseMQTT = false
 var MinimumPassive = -1
+
+func middleWareHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Middleware logic here
+		c.Next()
+	}
+}
 
 func RunWithCORSAndHTTPS() error {
 	// Define your routes and handlers here
