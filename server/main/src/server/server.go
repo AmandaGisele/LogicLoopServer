@@ -81,7 +81,6 @@ func Run() (err error) {
 				"Message": template.HTML(fmt.Sprintf(`Family '%s' does not exist. Follow <a href="https://www.internalpositioning.com/doc/tracking_your_phone.md" target="_blank">these instructions</a> to get started.`, family)),
 			})
 		}
-
 	})
 	r.DELETE("/api/v1/database/:family", func(c *gin.Context) {
 		family := strings.ToLower(c.Param("family"))
@@ -93,7 +92,6 @@ func Run() (err error) {
 		} else {
 			c.JSON(200, gin.H{"success": false, "message": err.Error()})
 		}
-
 	})
 	r.DELETE("/api/v1/location/:family/:location", func(c *gin.Context) {
 		family := strings.ToLower(c.Param("family"))
@@ -390,4 +388,17 @@ func Run() (err error) {
 			}
 			logger.Log.Debugf("[%s] found %d devices to check", family, len(devicesToCheck))
 
-			logger.Log.Debugf("[%s
+			// More code here...
+
+			return
+		}(family)
+		if err != nil {
+			logger.Log.Warn(err)
+			c.HTML(200, "dashboard.tmpl", gin.H{
+				"ErrorMessage": err.Error(),
+				"Family":       family,
+			})
+		}
+	})
+	return r.Run(":" + Port)
+}
