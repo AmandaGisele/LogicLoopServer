@@ -36,7 +36,7 @@ func RunWithCORSAndHTTPS() error {
 	handler := cors.Default().Handler(mux)
 
 	// Start the HTTPS server
-	return http.ListenAndServeTLS(":8003", "/path/to/fullchain.pem", "/path/to/privkey.pem", handler)
+	return http.ListenAndServeTLS(":8003", "/etc/ssl/fullchain.pem", "/etc/ssl/privkey.pem", handler)
 }
 
 // Run will start the server listening on the specified port
