@@ -8,6 +8,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/gorilla/websocket"
+	"github.com/schollz/find3/server/main/src/logging"
+)
+
+var (
+	upgrader = websocket.Upgrader{}
+	logger   = logging.New()
 )
 
 var wsupgrader = websocket.Upgrader{
@@ -67,6 +74,10 @@ func wshandler(c *gin.Context) {
 	go websocketListener(family, device, conn)
 	// Listen to the websockets
 
+}
+
+func sendOutLocation() {
+	// Implementation of sendOutLocation function
 }
 
 func websocketListener(family string, device string, conn *websocket.Conn) {
