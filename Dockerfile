@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-ENV GOLANG_VERSION 1.11
+ENV GOLANG_VERSION 1.13
 ENV PATH="/usr/local/go/bin:/usr/local/work/bin:${PATH}"
 ENV GOPATH /usr/local/work
 ENV GO111MODULE=on
