@@ -26,40 +26,30 @@ RUN mkdir -p /app && \
     mkdir /app/mosquitto_config && \
     touch /app/mosquitto_config/acl && \
     touch /app/mosquitto_config/passwd && \
-    echo 'allow_anonymous false\nacl_file /data/mosquitto_config/acl\npassword_file /data/mosquitto_config/passwd\npid_file /data/mosquitto_config/pid\n' > /app/mosquitto_config/mosquitto.conf && \
-    echo "moving to find3" && cd /build/find3/server/main && go build -v && \
-    echo "moving main" && mv /build/find3/server/main /app/main && \
-    echo "moving to ai" && cd /build/find3/server/ai && python3 -m pip install -r requirements.txt && \
-    echo "moving ai" && mv /build/find3/server/ai /app/ai && \
-    echo "removing go srces" && rm -rf /usr/local/work/src && \
-    echo "purging packages" && apt-get remove -y --auto-remove git libc6-dev pkg-config g++ gcc && \
-    echo "autoclean" && apt-get autoclean && \
-    echo "clean" && apt-get clean && \
-    echo "autoremove" && apt-get autoremove && \
-    echo "rm trash" && rm -rf ~/.local/share/Trash/* && \
-    echo "rm go" && rm -rf /usr/local/go* && \
-    echo "rm perl" && rm -rf /usr/share/perl* && \
-    echo "rm build" && rm -rf /build* && \
-    echo "rm doc" && rm -rf /usr/share/doc*
+    echo 'allow_anonymous false\nacl_file /data/mosquitto_config/acl\npassword_file /data/mosquitto_config/passwd\npid_file /data/mosquitto_config/pid\n' > /app/mosquitto_config/mosquitto.conf
+
+# Copy the source code into the container
+COPY . /build
+
+# Build the Go application
+RUN cd /build/find3/server/main && go build -v -o /app/main && \
+    cd /build/find3/server/ai && python3 -m pip install -r requirements.txt && \
+    mv /build/find3/server/ai /app/ai && \
+    rm -rf /usr/local/work/src && \
+    apt-get remove -y --auto-remove git libc6-dev pkg-config g++ gcc && \
+    apt-get autoclean && apt-get clean && apt-get autoremove && \
+    rm -rf ~/.local/share/Trash/* && rm -rf /usr/local/go* && rm -rf /usr/share/perl* && \
+    rm -rf /build* && rm -rf /usr/share/doc*
 
 # Copy the SSL certificates into the container
 COPY fullchain.pem /etc/ssl/certs/fullchain.pem
 COPY privkey.pem /etc/ssl/private/privkey.pem
 
-# Copy the source code into the container
-COPY . .
-
-# Download Go dependencies
-RUN go mod download
-
-# Build the Go app
-RUN go build -o main .
+# Set the working directory
+WORKDIR /app
 
 # Expose port 8003 to the outside world
 EXPOSE 8003
-
-# Set the working directory
-WORKDIR /app
 
 # Command to run the executable
 CMD ["/app/startup.sh"]
