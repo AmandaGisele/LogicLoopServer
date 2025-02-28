@@ -32,9 +32,9 @@ RUN mkdir -p /app && \
 COPY . /build
 
 # Build the Go application
-RUN cd /build/find3/server/main && go build -v -o /app/main && \
-    cd /build/find3/server/ai && python3 -m pip install -r requirements.txt && \
-    mv /build/find3/server/ai /app/ai && \
+RUN cd /build/LogicLoopServer/server/main && go build -v -o /app/main && \
+    cd /build/LogicLoopServer/server/ai && python3 -m pip install -r requirements.txt && \
+    mv /build/LogicLoopServer/server/ai /app/ai && \
     rm -rf /usr/local/work/src && \
     apt-get remove -y --auto-remove git libc6-dev pkg-config g++ gcc && \
     apt-get autoclean && apt-get clean && apt-get autoremove && \
