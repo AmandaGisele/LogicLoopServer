@@ -10,9 +10,7 @@ import (
 	"runtime"
 	"runtime/pprof"
 	"time"
-
 	"fmt"
-
 	"github.com/schollz/find3/server/main/src/api"
 	"github.com/schollz/find3/server/main/src/database"
 	"github.com/schollz/find3/server/main/src/mqtt"
@@ -116,34 +114,13 @@ func main() {
 			log.Println("finished profiling")
 		}()
 	}
-
 	if *dump != "" {
 		err = api.Dump(*dump)
 	} else {
-		// Add CORS middleware and start the server
-		http.HandleFunc("/", withCORS(server.Run))
-		err = http.ListenAndServe(":"+*port, nil)
+		err = server.RunWithCORSAndHTTPS()
 	}
-
 	if err != nil {
 		fmt.Print("error: ")
 		fmt.Println(err)
-	}
-}
-
-// withCORS is a middleware function that adds CORS headers to the response
-func withCORS(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization")
-
-		// If this is a preflight request, return 204 and stop further processing
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		next(w, r)
 	}
 }
