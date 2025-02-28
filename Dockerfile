@@ -39,8 +39,8 @@ COPY . /build
 # List the contents of the /build directory for debugging
 RUN ls -R /build
 
-# Build the Go application
-RUN cd /build/server/main && go build -v -o /app/main
+# Build the Go application with debug output
+RUN cd /build/server/main && go build -v -o /app/main || { echo 'Go build failed'; exit 1; }
 
 # Install Python dependencies
 RUN cd /build/server/ai && python3 -m pip install -r requirements.txt
