@@ -50,6 +50,7 @@ RUN cd /build/server/main && go build -v -o /app/main && \
     rm -rf /build* && rm -rf /usr/share/doc*
 
 # Copy the SSL certificates into the container
+COPY cert.pem /etc/ssl/cert.pem
 COPY fullchain.pem /etc/ssl/fullchain.pem
 COPY privkey.pem /etc/ssl/privkey.pem
 
