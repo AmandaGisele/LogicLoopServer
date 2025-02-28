@@ -21,7 +21,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-instal
     esac
 
 # Create necessary directories and configuration files
-RUN echo '[supervisord]\nnodaemon=true\nlogfile=/var/log/supervisord.log\nlogfile_maxbytes=0\n' > /etc/supervisor/conf.d/supervisord.conf && \
+RUN mkdir -p /app && \
+    echo '[supervisord]\nnodaemon=true\nlogfile=/var/log/supervisord.log\nlogfile_maxbytes=0\n' > /etc/supervisor/conf.d/supervisord.conf && \
     mkdir /app/mosquitto_config && \
     touch /app/mosquitto_config/acl && \
     touch /app/mosquitto_config/passwd && \
@@ -48,7 +49,7 @@ COPY privkey.pem /etc/ssl/private/privkey.pem
 # Copy the source code into the container
 COPY . .
 
-# Download dependencies
+# Download Go dependencies
 RUN go mod download
 
 # Build the Go app
