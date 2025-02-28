@@ -50,8 +50,8 @@ RUN cd /build/server/main && go build -v -o /app/main && \
     rm -rf /build* && rm -rf /usr/share/doc*
 
 # Copy the SSL certificates into the container
-COPY fullchain.pem /etc/ssl/certs/fullchain.pem
-COPY privkey.pem /etc/ssl/private/privkey.pem
+COPY fullchain.pem /etc/ssl/fullchain.pem
+COPY privkey.pem /etc/ssl/privkey.pem
 
 # Set the working directory
 WORKDIR /app
