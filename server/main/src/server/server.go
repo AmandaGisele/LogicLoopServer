@@ -18,6 +18,7 @@ import (
 	"github.com/schollz/find3/server/main/src/models"
 	"github.com/schollz/find3/server/main/src/mqtt"
 	"github.com/schollz/utils"
+	"github.com/rs/cors"
 )
 
 // Port defines the public port
@@ -25,6 +26,17 @@ var Port = "8003"
 var UseSSL = false
 var UseMQTT = false
 var MinimumPassive = -1
+
+func RunWithCORS() error {
+	// Define your routes and handlers here
+	mux := http.NewServeMux()
+	// Example: mux.HandleFunc("/api/v1/by_location/", YourHandler)
+
+	// Enable CORS
+	handler := cors.Default().Handler(mux)
+
+	// Start the server
+	return http.ListenAndServe(":8003", handler)
 
 // Run will start the server listening on the specified port
 func Run() (err error) {
