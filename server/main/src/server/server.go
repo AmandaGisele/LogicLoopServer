@@ -27,7 +27,14 @@ var UseSSL = false
 var UseMQTT = false
 var MinimumPassive = -1
 
-func RunWithCORS() error {
+package server
+
+import (
+	"net/http"
+	"github.com/rs/cors"
+)
+
+func RunWithCORSAndHTTPS() error {
 	// Define your routes and handlers here
 	mux := http.NewServeMux()
 	// Example: mux.HandleFunc("/api/v1/by_location/", YourHandler)
@@ -35,8 +42,9 @@ func RunWithCORS() error {
 	// Enable CORS
 	handler := cors.Default().Handler(mux)
 
-	// Start the server
-	return http.ListenAndServe(":8003", handler)
+	// Start the HTTPS server
+	return http.ListenAndServeTLS(":8003", "/path/to/fullchain.pem", "/path/to/privkey.pem", handler)
+}
 
 // Run will start the server listening on the specified port
 func Run() (err error) {
