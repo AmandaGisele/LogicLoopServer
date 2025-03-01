@@ -8,20 +8,19 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/gorilla/websocket"
 	"github.com/schollz/find3/server/main/src/logging"
 )
 
 var (
 	upgrader = websocket.Upgrader{}
-	logger   = logging.New()
+	logger, _ = logging.New()
 )
 
 var wsupgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		return true
+		return true,
 	},
 }
 
@@ -70,10 +69,9 @@ func wshandler(c *gin.Context) {
 	}
 	ws.connections[family+"-"+device][conn.RemoteAddr().String()] = conn
 	ws.Unlock()
-	go sendOutLocation(family, device)
+	go sendOutLocation()
 	go websocketListener(family, device, conn)
 	// Listen to the websockets
-
 }
 
 func sendOutLocation() {
@@ -97,7 +95,7 @@ func websocketListener(family string, device string, conn *websocket.Conn) {
 	}
 }
 
-//  SendMessageOverWebsockets will send a message over the websockets
+// SendMessageOverWebsockets will send a message over the websockets
 func SendMessageOverWebsockets(family string, device string, msg []byte) (err error) {
 	ws.Lock()
 	defer ws.Unlock()
