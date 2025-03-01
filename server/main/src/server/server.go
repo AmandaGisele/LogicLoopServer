@@ -77,7 +77,7 @@ func Run() (err error) {
 	r.POST("/", func(c *gin.Context) {
 		family := strings.ToLower(c.PostForm("inputFamily"))
 		db, err := database.Open(family, true)
-		if (err == nil) {
+		if err == nil {
 			db.Close()
 			c.Redirect(http.StatusMovedPermanently, "/view/dashboard/"+family)
 		} else {
@@ -365,7 +365,6 @@ func Run() (err error) {
 		family := strings.ToLower(c.Param("family"))
 		err := func(family string) (err error) {
 			startTime := time.Now()
-			var errorMessage string
 
 			d, err := database.Open(family, true)
 			if err != nil {
@@ -373,7 +372,6 @@ func Run() (err error) {
 				return
 			}
 			defer d.Close()
-			var efficacy Efficacy
 
 			minutesAgoInt := 60
 			millisecondsAgo := int64(minutesAgoInt * 60 * 1000)
