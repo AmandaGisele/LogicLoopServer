@@ -62,6 +62,12 @@ COPY privkey.pem /etc/ssl/privkey.pem
 # Verify the SSL certificates are copied correctly
 RUN ls -l /etc/ssl/fullchain.pem && ls -l /etc/ssl/privkey.pem
 
+# Copy the startup script
+COPY startup.sh /app/startup.sh
+
+# Make the startup script executable
+RUN chmod +x /app/startup.sh
+
 # Set the working directory
 WORKDIR /app
 
