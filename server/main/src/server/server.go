@@ -77,7 +77,7 @@ func Run() (err error) {
 	r.POST("/", func(c *gin.Context) {
 		family := strings.ToLower(c.PostForm("inputFamily"))
 		db, err := database.Open(family, true)
-		if err == nil {
+		if (err == nil) {
 			db.Close()
 			c.Redirect(http.StatusMovedPermanently, "/view/dashboard/"+family)
 		} else {
