@@ -62,11 +62,35 @@ COPY privkey.pem /etc/ssl/privkey.pem
 # Verify the SSL certificates are copied correctly
 RUN ls -l /etc/ssl/fullchain.pem && ls -l /etc/ssl/privkey.pem
 
-# Copy the startup script
-COPY startup.sh /app/startup.sh
+# Create the startup script
+RUN echo '#!/bin/sh\n\
+pkill -9 mosquitto\n\
+cp -R -u -p /app/mosquitto_config /data\n\
+mosquitto -d -c /data/mosquitto_config/mosquitto.conf\n\
+mkdir -p /data/logs\n\
+/usr/bin/supervisord\n'\
+> /app/startup.sh && chmod +x /app/startup.sh
 
-# Make the startup script executable
-RUN chmod +x /app/startup.sh
+# Create the supervisor configuration
+RUN echo '[supervisord]\n\
+nodaemon=true\n\
+[program:main]\n\
+directory=/app/main\n\
+command=/app/main/main -debug -data /data/data -mqtt-dir /data/mosquitto_config\n\
+priority=1\n\
+stdout_logfile=/data/logs/main.stdout\n\
+stdout_logfile_maxbytes=0\n\
+stderr_logfile=/data/logs/main.stderr\n\
+stderr_logfile_maxbytes=0\n\
+[program:ai]\n\
+directory=/app/ai\n\
+command=make production\n\
+priority=2\n\
+stdout_logfile=/data/logs/ai.stdout\n\
+stdout_logfile_maxbytes=0\n\
+stderr_logfile=/data/logs/ai.stderr\n\
+stderr_logfile_maxbytes=0\n'\
+> /etc/supervisor/conf.d/supervisord.conf
 
 # Set the working directory
 WORKDIR /app
