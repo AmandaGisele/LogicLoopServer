@@ -28,9 +28,6 @@ type Websockets struct {
 	sync.Mutex
 }
 
-var (
-	ws Websockets
-	logger, _ = logging.New()
 )
 
 func init() {
