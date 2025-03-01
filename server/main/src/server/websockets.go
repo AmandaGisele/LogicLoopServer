@@ -13,7 +13,6 @@ import (
 
 var (
 	upgrader = websocket.Upgrader{}
-	logger, _ = logging.New()
 )
 
 var wsupgrader = websocket.Upgrader{
@@ -31,6 +30,7 @@ type Websockets struct {
 
 var (
 	ws Websockets
+	logger, _ = logging.New()
 )
 
 func init() {
