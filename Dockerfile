@@ -55,9 +55,9 @@ RUN rm -rf /usr/local/work/src /build /usr/share/doc && \
     rm -rf ~/.local/share/Trash/* /usr/local/go* /usr/share/perl*
 
 # Copy the SSL certificates into the container
-COPY cert.pem /etc/ssl/cert.pem
-COPY fullchain.pem /etc/ssl/fullchain.pem
-COPY privkey.pem /etc/ssl/privkey.pem
+COPY /etc/ssl/cert.pem /etc/ssl/cert.pem
+COPY /etc/ssl/fullchain.pem /etc/ssl/fullchain.pem
+COPY /etc/ssl/privkey.pem /etc/ssl/privkey.pem
 
 # Verify the SSL certificates are copied correctly
 RUN ls -l /etc/ssl/fullchain.pem && ls -l /etc/ssl/privkey.pem
