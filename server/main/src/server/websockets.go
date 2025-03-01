@@ -28,8 +28,6 @@ type Websockets struct {
 	sync.Mutex
 }
 
-)
-
 func init() {
 	ws.Lock()
 	defer ws.Unlock()
