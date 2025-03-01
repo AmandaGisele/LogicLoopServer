@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -10,7 +11,7 @@ import (
 	"runtime"
 	"runtime/pprof"
 	"time"
-	"fmt"
+
 	"github.com/schollz/find3/server/main/src/api"
 	"github.com/schollz/find3/server/main/src/database"
 	"github.com/schollz/find3/server/main/src/mqtt"
