@@ -8,11 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/schollz/find3/server/main/src/logging"
-)
-
-var (
-	upgrader = websocket.Upgrader{}
 )
 
 var wsupgrader = websocket.Upgrader{
@@ -26,6 +21,10 @@ var wsupgrader = websocket.Upgrader{
 type Websockets struct {
 	connections map[string]map[string]*websocket.Conn
 	sync.Mutex
+}
+
+var ws = Websockets{
+	connections: make(map[string]map[string]*websocket.Conn),
 }
 
 func init() {
@@ -82,7 +81,6 @@ func websocketListener(family string, device string, conn *websocket.Conn) {
 				if _, ok2 := ws.connections[family+"-"+device][conn.RemoteAddr().String()]; ok2 {
 					delete(ws.connections[family+"-"+device], conn.RemoteAddr().String())
 				}
-				logger.Log.Debugf("removed %s/%s", family+"-"+device, conn.RemoteAddr().String())
 			}
 			ws.Unlock()
 			return
@@ -98,7 +96,7 @@ func SendMessageOverWebsockets(family string, device string, msg []byte) (err er
 		for _, conn := range ws.connections[family+"-"+device] {
 			err = conn.WriteMessage(1, msg)
 			if err != nil {
-				logger.Log.Warnf("problem sending websocket: %s/%s", family+"-"+device)
+				fmt.Printf("problem sending websocket: %s/%s\n", family, device)
 			}
 		}
 	}
