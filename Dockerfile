@@ -7,7 +7,7 @@ ENV GO111MODULE=on
 
 # Install dependencies
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-    wget git libc6-dev make pkg-config g++ gcc mosquitto-clients mosquitto \
+    wget git libc6-dev make pkg-config g++ gcc mosquitto-clients mosquitto nginx \
     python3 python3-dev python3-pip python3-setuptools python3-wheel supervisor \
     libfreetype6-dev python3-matplotlib libopenblas-dev libblas-dev liblapack-dev gfortran && \
     python3 -m pip install Cython --install-option="--no-cython-compile" && \
@@ -62,13 +62,17 @@ COPY privkey.pem /etc/ssl/privkey.pem
 # Verify the SSL certificates are copied correctly
 RUN ls -l /etc/ssl/fullchain.pem && ls -l /etc/ssl/privkey.pem
 
+# Copy the Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Create the startup script
 RUN echo '#!/bin/sh\n\
 pkill -9 mosquitto\n\
 cp -R -u -p /app/mosquitto_config /data\n\
 mosquitto -d -c /data/mosquitto_config/mosquitto.conf\n\
 mkdir -p /data/logs\n\
-/usr/bin/supervisord\n'\
+/usr/bin/supervisord &\n\
+nginx -g "daemon off;"\n'\
 > /app/startup.sh && chmod +x /app/startup.sh
 
 # Create the supervisor configuration
@@ -76,7 +80,7 @@ RUN echo '[supervisord]\n\
 nodaemon=true\n\
 [program:main]\n\
 directory=/app/main\n\
-command=/app/main/main -debug -data /data/data -mqtt-dir /data/mosquitto_config\n\
+command=/app/main -data /data/data -mqtt-dir /data/mosquitto_config\n\
 priority=1\n\
 stdout_logfile=/data/logs/main.stdout\n\
 stdout_logfile_maxbytes=0\n\
