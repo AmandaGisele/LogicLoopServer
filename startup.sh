@@ -7,5 +7,6 @@ mosquitto -d -c /data/mosquitto_config/mosquitto.conf
 # Create logs directory if not exists
 mkdir -p /data/logs
 
-# Start the application
-/app/main
+# Start supervisor and nginx
+/usr/bin/supervisord &
+nginx -g "daemon off;"
