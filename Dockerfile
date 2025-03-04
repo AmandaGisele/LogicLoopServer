@@ -101,6 +101,7 @@ WORKDIR /app
 
 # Expose port 8003 to the outside world
 EXPOSE 8003
+EXPOSE 443
 
 # Command to run the executable
 CMD ["/app/startup.sh"]
