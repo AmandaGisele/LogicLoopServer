@@ -36,11 +36,18 @@ RUN mkdir -p /app && \
 # Copy the source code into the container
 COPY . /build
 
+# Set the working directory
+WORKDIR /build
+
+# Initialize Go modules and fetch dependencies
+RUN go mod init logicloopserver || true
+RUN go mod tidy
+
 # List the contents of the /build directory for debugging
 RUN ls -R /build
 
 # Build the Go application with debug output
-RUN cd /build/server/main && go build -v -o /app/main || { echo 'Go build failed'; exit 1; }
+RUN cd /build/server/main && go build -v -o /app/main/main || { echo 'Go build failed'; exit 1; }
 
 # Install Python dependencies
 RUN cd /build/server/ai && python3 -m pip install -r requirements.txt
@@ -80,7 +87,7 @@ RUN echo '[supervisord]\n\
 nodaemon=true\n\
 [program:main]\n\
 directory=/app/main\n\
-command=/app/main -data /data/data -mqtt-dir /data/mosquitto_config\n\
+command=/app/main/main -data /data/data -mqtt-dir /data/mosquitto_config\n\
 priority=1\n\
 stdout_logfile=/data/logs/main.stdout\n\
 stdout_logfile_maxbytes=0\n\
