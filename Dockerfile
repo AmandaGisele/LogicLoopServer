@@ -102,6 +102,9 @@ COPY cert.pem /etc/ssl/cert.pem
 COPY fullchain.pem /etc/ssl/fullchain.pem
 COPY privkey.pem /etc/ssl/privkey.pem
 
+# Add the CA certificate to the trusted store
+RUN update-ca-certificates
+
 # Copy the Nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
